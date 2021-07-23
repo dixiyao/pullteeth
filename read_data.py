@@ -2,6 +2,7 @@ import vtk
 import matplotlib.pyplot as plt
 import numpy as np
 import copy
+import math
 
 class tooth(object):
     def __init__(self,name):
@@ -36,9 +37,9 @@ class tooth(object):
             polydata.GetPoint(i,p)
             z=int(p[2])
             if p[2]-z<0 and z%2==1:
-                z=-z-1
+                z=-z-0.5
             if p[2]-z>=0 and z%2==1:
-                z=z+1 
+                z=z+0.5
             if (z not in new_z):
                 new_z.append(z)
         #逆序排列，表面的牙z值大
@@ -50,9 +51,9 @@ class tooth(object):
             polydata.GetPoint(i,p)
             z=int(p[2])
             if p[2]-z<0 and z%2==1:
-                z=z-1
+                z=z-0.5
             if p[2]-z>=0 and z%2==1:
-                z=z+1
+                z=z+0.5
             index=new_z.index(z)
             tmp=[p[0],p[1],p[2]]
             points[index].append(tmp)
@@ -61,6 +62,21 @@ class tooth(object):
         #     for j in range(0,len(points[i])):
         #         file.write(str(round(points[i][j][0],2))+" "+str(round(points[i][j][1],2))+" "+str(round(points[i][j][2],2))+'\n')
         #     file.write("\n")
+
+        for i in range(len(points)):
+            temp=[[points[i][0][0],points[i][0][1],points[i][0][2]]]
+            for j in range(len(points[i])-1):
+                x = points[i][j][0]
+                y = points[i][j][1]
+                z = points[i][j][2]
+                x_ = points[i][j+1][0]
+                y_ = points[i][j+1][1]
+                z_ = points[i][j+1][2]
+                dis=math.sqrt((x-x_)*(x-x_)+(y-y_)*(y-y_)+(z-z_)*(z-z_))
+                if dis>1:
+                    temp.append([x_,y_,z_])
+            points[i]=temp
+
         self.points=points
         self.levels=len(points)
 
@@ -68,6 +84,8 @@ class tooth(object):
         points_bk=copy.deepcopy(self.points)
         for i in range(len(self.points)):
             self.points[i]=points_bk[len(self.points)-i-1]
+
+    def transform_z_negetive(self):
         for j in range(len(self.points)):
             for i in range(len(self.points[j])):
                 self.points[j][i][2]=-self.points[j][i][2]

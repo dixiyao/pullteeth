@@ -73,33 +73,30 @@ t.transform_reverse_up_and_down()
 points=t.points
 data=[]
 red=[]
-for j in range(len(points)):
+
+for j in range(t.levels):
     for i in range(0,len(t.points[j])): 
         data.append(points[j][i])
         if j==0 and i in [0]:#,1,2]:
           red.append(points[j][i])  
 data=np.array(data)
 red=np.array(red)
-
-ac1=data_actor_stl(r'T T_Green_Split_002.stl')
+'''
+#ac1=data_actor_stl(r'T T_Green_Split_002.stl')
+ac1=data_actor(data)
 ac2=data_actor(red)
 ac2.GetProperty().SetColor(1,0,0)
 ac2.GetProperty().SetPointSize(10)
 show_actor([ac1,ac2])
-
-
 '''
-ax=plt.axes(projection='3d')
 x=[]
 y=[]
 z=[]
-for j in range(len(t.points)):
-    for i in range(0,len(t.points[j])):
-        x.append(t.points[j][i][0])
-        y.append(t.points[j][i][1])
-        z.append(t.points[j][i][2])
-
-ax.scatter3D(x,y,z)
+for k in range(3,4):
+    for i in range(len(t.points[k])):
+        x.append(t.points[k][i][0])
+        y.append(t.points[k][i][1])
+        z.append(t.points[k][i][2])
+plt.plot(np.array(x),np.array(y))
 plt.show()
-'''
 
