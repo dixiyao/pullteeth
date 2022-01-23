@@ -12,10 +12,10 @@ class tooth(object):
         stlreader.SetFileName(name)
         stlreader.Update()
 
-        
+
         #根据测试，x轴为牙齿长轴，故沿y轴逆时针旋转90°
         rotate1=vtk.vtkTransform()
-        #rotate1.RotateY(-90)
+        rotate1.RotateX(90)
         filter1=vtk.vtkTransformPolyDataFilter()
         filter1.SetInputConnection(stlreader.GetOutputPort())
         filter1.SetTransform(rotate1)
@@ -26,19 +26,19 @@ class tooth(object):
         stlwriter.SetFileName(r"result.stl")
         stlwriter.SetInputConnection(filter1.GetOutputPort())
         stlwriter.Write()
-        
+
         #获取点坐标，按z值划分XOY平面，间隔为2mm。
         p=[0,0,0]
         polydata=filter1.GetOutput()
         points=[]
         new_z=[]
-        
+
         for i in range(polydata.GetNumberOfPoints()):
             polydata.GetPoint(i,p)
             z=int(p[2])
-            if p[2]-z<0 and z%2==1:
+            if p[2]-z<0:# and z%2==0:
                 z=-z-0.5
-            if p[2]-z>=0 and z%2==1:
+            if p[2]-z>=0:# and z%2==1:
                 z=z+0.5
             if (z not in new_z):
                 new_z.append(z)
@@ -50,9 +50,9 @@ class tooth(object):
         for i in range(polydata.GetNumberOfPoints()):
             polydata.GetPoint(i,p)
             z=int(p[2])
-            if p[2]-z<0 and z%2==1:
-                z=z-0.5
-            if p[2]-z>=0 and z%2==1:
+            if p[2]-z<0:# and z%2==1:
+                z=-z-0.5
+            if p[2]-z>=0:# and z%2==1:
                 z=z+0.5
             index=new_z.index(z)
             tmp=[p[0],p[1],p[2]]
@@ -109,10 +109,10 @@ class tooth(object):
         plt.show()
 
 if __name__=="__main__":
-    t=tooth(r"T T_Green_Split_002.stl")
+    t=tooth(r"33.stl")
     t.get_level(0)
     t.transform_reverse_up_and_down()
-    for i in range(t.levels):
-        print(t.points[i][0][2])
+    #for i in range(t.levels):
+    #    print(t.points[i][0][2])
 
         

@@ -2,35 +2,56 @@ import math
 import socket
 import pickle
 import time
-from read_data import tooth
 
-t=tooth(r'T T_Green_Split_002.stl')
-### 注释下面两行，则为反向
-#t.transform_reverse_up_and_down()
-#t.transform_z_negetive()
+class tooths(object):
+    def __init__(self,points_data):
+        self.name = 'name'
+        self.levels = points_data[2]
+        self.points =points_data[1]
+        self.start_point=points_data[0]
+
+with open('data.pkl','rb') as f:
+    points_data=pickle.load(f)
+t=tooths(points_data)
+
 delegate= socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-delegate.connect(('169.254.174.11',30002))
-print("connect success")
+delegate.connect(('192.168.1.1',30002))
+#print("connect success")
 
 #初始点坐标，每次把针头位置设定好以后都要调整
-start_x=-0.21488
-start_y=-0.76436
-start_z=0.49784
-start_rx=0.7106
-start_ry=3.0611
-start_rz=-1.2311
+start_x=0.20450
+start_y=0.59705
+start_z=0.39330
+start_rx=3.1044
+start_ry=2.1370
+start_rz=-0.3580
+
 #以第一个点作为bias校准，如果从第x层开始切，下面的每行第一个中括号里都要改成x
-biasx=start_x-t.points[0][0][0]/1000
-biasy=start_y-t.points[0][0][1]/1000
-biasz=start_z-t.points[0][0][2]/1000
+biasx=start_x-t.start_point[0]/1000
+biasy=start_y-t.start_point[1]/1000
+biasz=start_z-t.start_point[2]/1000
+
+from_start_to_first=[t.start_point]
+from_start_to_first.append([t.start_point[0],t.start_point[1],t.start_point[2]-50])
+from_start_to_first.append([t.points[0][0][0],t.points[0][0][1],t.start_point[2]-50])
+from_start_to_first.append(t.points[0][0])
+for p in from_start_to_first:
+    x = round(p[0], 2)
+    y = round(p[1], 2)
+    z = round(p[2], 2)
+    x = x / 1000 + biasx
+    y = y / 1000 + biasy
+    z = z / 1000 + biasz
+    command = 'movel(p[' + str(x) + ',' + str(y) + ',' + str(z) + ',' + str(start_rx) + ',' + str(start_ry) + ',' + str(
+        start_rz) + '],a=0.05, v=0.05, t=0, r=0)\n'
+
+    delegate.send(command.encode("utf8"))
+    time.sleep(0.5)
 
 #range( 后数字表示从第x层开始切
 for i in range(0,t.levels):
     gogogo = input()
     level=i
-    #t.get_level(i+1)
-    #data=open('data.txt')
-    #data=data.readlines()
     #切除一个平面
     for j in range(0,len(t.points[level])):
         x = round(t.points[level][j][0],2)

@@ -1,1 +1,10 @@
 *.txt
+*.stl
+*.pkl
+*.ply
+.idea
+*.pyc
+*.xml
+*.iml
+*.pcd
+*.obj

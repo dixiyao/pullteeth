@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as p3
 import matplotlib.animation as animation
 from read_data import tooth
+from icp import jaw_and_tooth
 
 def Gen_RandLine(length, dims=2) :
     lineData = np.empty((dims, length))
@@ -24,14 +25,16 @@ def update_lines(num, dataLines, lines,ct_levels) :
         line.set_data(data[:2, num-ct_levels[num]:num])
     return lines
 
-t=tooth(r'T T_Green_Split_002.stl')
+t=jaw_and_tooth('21','33',True)
+p=t.getpoints(istooth=True)
+remove,level=t.getremovepoints(p)
 #t.transform_reverse_up_and_down()
 #t.transform_z_negetive()
 points=[]
 ct_levels=[]
-for i in range(0,len(t.points)):
-    for j in range(len(t.points[i])):
-        points.append(t.points[i][j])
+for i in range(0,len(remove)):
+    for j in range(len(remove[i])):
+        points.append(remove[i][j])
         ct_levels.append(j)
 # Attaching 3D axis to the figure
 plt.axis('square')
