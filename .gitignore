@@ -13,3 +13,6 @@ build
 databackup
 dist
 *.spec
+*.dcm
+*.xml
+other_data_backup
