@@ -9,3 +9,7 @@
 *.pcd
 *.obj
 *.pyc
+build
+databackup
+dist
+*.spec

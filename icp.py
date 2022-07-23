@@ -6,7 +6,6 @@ from sklearn.preprocessing import normalize
 import open3d as o3d
 import vtk
 import numpy as np
-import matplotlib.pyplot as plt
 
 from Errors import*
 
@@ -43,8 +42,8 @@ class jaw_and_tooth():
             #jaw=jaw.voxel_down_sample(voxel_size=0.01)
 
             #为两个点云上上不同的颜色
-            tooth.paint_uniform_color([1, 0.706, 0])    #source 为黄色
-            jaw.paint_uniform_color([0, 0.651, 0.929])#target 为蓝色
+            tooth.paint_uniform_color([0, 0.651, 0.929])    #source 为蓝色
+            jaw.paint_uniform_color([1, 0.706, 0])#target 为黄色
 
             if not single_tooth==True:
             #icp配准
@@ -239,12 +238,12 @@ def draw3D(points,start):
 #配准牙齿和头骨的pair
 if __name__=='__main__':
     print(o3d.__version__)
-    pair=jaw_and_tooth('21','head',True)
-    pair.plane_detection_transform()
+    pair=jaw_and_tooth('33','4',False)
+    #pair.plane_detection_transform()
     points = pair.getpoints(istooth=True)
     start, removepoints, level = pair.getremovepoints(points)
     draw3D(points,start)
     pair.visualize()
 #生成路径
     with open('data.pkl','wb') as f:
-        pickle.dump((start,removepoints,level),f)
+       pickle.dump((start,removepoints,level),f)

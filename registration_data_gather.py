@@ -1,5 +1,5 @@
 import socket
-import time
+import winsound
 import struct
 import pickle
 
@@ -37,8 +37,9 @@ def get_registration_point(samples=500):
         ry = struct.unpack('!d', packet)[0]
         packet = delegate.recv(8)
         rz = struct.unpack('!d', packet)[0]
-        print(x,y,z,rx,ry,rz)
+        print(i,x,y,z,rx,ry,rz)
         registration_points.append([x,y,z])
+        winsound.Beep(440, 500)
         gogogo=input()
         delegate.close()
 
@@ -46,7 +47,10 @@ def get_registration_point(samples=500):
 
 if __name__=='__main__':
     registration_points=get_registration_point(50)
-    #with open('data.pkl', 'wb') as f:
-    #    pickle.dump(registration_points,f)
-
+    with open('data.pkl', 'wb') as f:
+       pickle.dump(registration_points,f)
+    with open('data.pkl', 'rb') as f:
+        registration_points=pickle.load(f)
+    for point in registration_points:
+        print(point)
 
