@@ -157,6 +157,6 @@ if __name__=='__main__':
     start,removepoints,level=PointInitialize(robots,triple)#PlaneInitialize(robots,triple)
     #
     with open('route.pkl','wb') as f:
-         pickle.dump((start,removepoints,level),f)
+        pickle.dump((start,removepoints,level),f)
 
 
